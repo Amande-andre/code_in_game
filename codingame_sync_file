@@ -23,7 +23,7 @@
 /*   By: anmande <anmande@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 17:36:03 by anmande           #+#    #+#             */
-/*   Updated: 2023/12/18 19:10:52 by anmande          ###   ########.fr       */
+/*   Updated: 2023/12/20 18:24:00 by anmande          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,18 +40,27 @@ private:
     int _id;
     int _pos_x;
     int _pos_y;
+    int _up;
+    int _left;
+    int _right;
+    //int _turn;
 public:
     Drone();
     ~Drone();
+    int _down;
     void setDrone(int x, int y, int id);
     void setDronePos(int x, int y);
     void setX(bool _bool);
     void setY(bool _bool);
     int  getX();
     int  getY();
+    void droneMvt();
+    void mvtUp();
+    void mvtDown();
+    void mvtR();
+    void mvtL();
+    bool lightOn();
 };
-
-
 
 #endif/* ************************************************************************** */
 /*                                                                            */
@@ -61,7 +70,7 @@ public:
 /*   By: anmande <anmande@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 16:16:07 by anmande           #+#    #+#             */
-/*   Updated: 2023/12/19 14:00:59 by anmande          ###   ########.fr       */
+/*   Updated: 2023/12/20 19:03:52 by anmande          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,13 +95,9 @@ int main()
         int type;
         cin >> creature_id >> color >> type; cin.ignore();
     }
-
-    int turn = 0;
-    int up = 0;
-    int down = 0;
-    //int left = 0;
-    int right = 0;
     // game loop
+    
+    Drone tab[2];
     while (1) {
         int my_score;
         cin >> my_score; cin.ignore();
@@ -113,7 +118,6 @@ int main()
         int my_drone_count;
         cin >> my_drone_count; cin.ignore();
         //creer les drones ici;
-        Drone tab[my_drone_count];
         for (int i = 0; i < my_drone_count; i++) {
             int drone_id;
             int drone_x;
@@ -162,29 +166,10 @@ int main()
 
             // Write an action using cout. DON'T FORGET THE "<< endl"
             // To debug: cerr << "Debug messages..." << endl;
-            if (up)
-                tab[i].setY(true);
-            else if (tab[i].getX() <= 9000 && down == 0)
-                tab[i].setX(true);
-            else 
-            {
-                tab[i].setX(false);
-                down = 1;
-                if (tab[i].getX() <= 800)
-                    down = 0;
-            }
-            if (tab[i].getY() <= 9000 && right == 0)
-                tab[i].setY(true);
-            else 
-            {
-                tab[i].setY(false);    
-                right = 1;
-                if (tab[i].getY() <= 200)
-                    right = 0;
-            }
-            cout << "MOVE " << tab[i].getX() << " " << tab[i].getY() << " " << "1" << endl; // MOVE <x> <y> <light (1|0)> | WAIT <light (1|0)>
+            tab[i].droneMvt();
+            cout << "MOVE " << tab[i].getX() << " " << tab[i].getY() << " " << tab[i].lightOn() << " " << tab[i].lightOn() << endl; // MOVE <x> <y> <light (1|0)> | WAIT <light (1|0)>
+            //cerr << "Light a 4500 et 7500" << endl;
         }
-        turn++;
     }
 }
 /* ************************************************************************** */
@@ -195,7 +180,7 @@ int main()
 /*   By: anmande <anmande@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 17:35:27 by anmande           #+#    #+#             */
-/*   Updated: 2023/12/19 11:14:01 by anmande          ###   ########.fr       */
+/*   Updated: 2023/12/20 19:14:00 by anmande          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,6 +192,10 @@ Drone::Drone()
 {
     this->_pos_x = 0;
     this->_pos_y = 0;
+    this-> _up = 0;    
+    this-> _down = 1;
+    this-> _left = 0;
+    this-> _right = 0;
 }
 
 Drone::~Drone()
@@ -214,8 +203,8 @@ Drone::~Drone()
 }
 
 void Drone::setDrone(int x, int y, int id) {
-    _pos_x += x;
-    _pos_y += y;
+    _pos_x = x;
+    _pos_y = y;
     _id = id;
 }
 
@@ -229,11 +218,6 @@ int Drone::getY()
     return (this->_pos_y);
 }
 
-// void Drone::droneMvt(bool TRUE)
-// {
-    
-// }
-
 void Drone::setX(bool _bool)
 {
     if (_bool)
@@ -245,7 +229,53 @@ void Drone::setX(bool _bool)
 void Drone::setY(bool _bool)
 {
     if (_bool)
-        this->_pos_y += 800;
+        this->_pos_y += 600;
     else
-        this->_pos_y -= 800;
+        this->_pos_y -= 600;
+}
+
+void Drone::mvtUp()
+{
+    Drone::setY(_down);
+}
+void Drone::mvtDown()
+{
+    if (this->_pos_y >= 8500){
+        this->_down = 0;
+    }
+    else if (this->_pos_y <= 500)
+        this->_down = 1;
+    Drone::setY(this->_down);
+}
+void Drone::mvtR()
+{
+    if (_pos_x >= 5000)
+        _right = 1;
+    else if ((_pos_x < 5000))
+        _right = 0;
+    if (_pos_x >= 8500)
+        _right = 0;
+    else if (_pos_x <= 2500)
+        _right = 1;
+    Drone::setX(_right);
+}
+void Drone::mvtL()
+{
+    Drone::setY(false);
+}
+void Drone::droneMvt()
+{
+    mvtDown();
+    mvtR();
+    // if (this->_left)
+    //     setX(true);
+}
+
+bool Drone::lightOn()
+{
+    if (this->_pos_y >= 7500 && this->_pos_y <= 6900)
+        return (true);
+    if (this->_pos_y >= 4000 && this->_pos_y <= 4500)
+        return (true);
+    return (false);
 }

@@ -6,7 +6,7 @@
 /*   By: anmande <anmande@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 16:16:07 by anmande           #+#    #+#             */
-/*   Updated: 2023/12/19 14:00:59 by anmande          ###   ########.fr       */
+/*   Updated: 2023/12/20 19:03:52 by anmande          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,9 @@ int main()
         int type;
         cin >> creature_id >> color >> type; cin.ignore();
     }
-
-    int turn = 0;
-    int up = 0;
-    int down = 0;
-    //int left = 0;
-    int right = 0;
     // game loop
+    
+    Drone tab[2];
     while (1) {
         int my_score;
         cin >> my_score; cin.ignore();
@@ -59,7 +55,6 @@ int main()
         int my_drone_count;
         cin >> my_drone_count; cin.ignore();
         //creer les drones ici;
-        Drone tab[my_drone_count];
         for (int i = 0; i < my_drone_count; i++) {
             int drone_id;
             int drone_x;
@@ -108,28 +103,9 @@ int main()
 
             // Write an action using cout. DON'T FORGET THE "<< endl"
             // To debug: cerr << "Debug messages..." << endl;
-            if (up)
-                tab[i].setY(true);
-            else if (tab[i].getX() <= 9000 && down == 0)
-                tab[i].setX(true);
-            else 
-            {
-                tab[i].setX(false);
-                down = 1;
-                if (tab[i].getX() <= 800)
-                    down = 0;
-            }
-            if (tab[i].getY() <= 9000 && right == 0)
-                tab[i].setY(true);
-            else 
-            {
-                tab[i].setY(false);    
-                right = 1;
-                if (tab[i].getY() <= 200)
-                    right = 0;
-            }
-            cout << "MOVE " << tab[i].getX() << " " << tab[i].getY() << " " << "1" << endl; // MOVE <x> <y> <light (1|0)> | WAIT <light (1|0)>
+            tab[i].droneMvt();
+            cout << "MOVE " << tab[i].getX() << " " << tab[i].getY() << " " << tab[i].lightOn() << " " << tab[i].lightOn() << endl; // MOVE <x> <y> <light (1|0)> | WAIT <light (1|0)>
+            //cerr << "Light a 4500 et 7500" << endl;
         }
-        turn++;
     }
 }
