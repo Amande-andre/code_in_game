@@ -6,7 +6,7 @@
 /*   By: anmande <anmande@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 16:17:27 by anmande           #+#    #+#             */
-/*   Updated: 2023/12/18 18:24:50 by anmande          ###   ########.fr       */
+/*   Updated: 2023/12/20 19:33:35 by anmande          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,12 +65,56 @@ public:
 #endif/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
+/*   creature.hpp                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anmande <anmande@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/19 17:16:58 by anmande           #+#    #+#             */
+/*   Updated: 2023/12/22 15:21:27 by anmande          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef CREATURE_HPP
+
+#define CREATURE_HPP
+
+#include <string>
+
+class Creature
+{
+private:
+    int _creature_id;
+    int _creature_type;
+    int _creature_x;
+    int _creature_y;
+    int _creature_vx;
+    int _creature_vy;
+public:
+    Creature();
+    ~Creature();
+    void   inst(int id, int type);
+    void   setCreature(int x, int y, int vx, int vy);
+    int    getId() const;
+    int    getType() const;
+    int    getX() const;
+    int    getY() const;
+    //int    getVector() const;
+    
+};
+
+
+
+
+#endif
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anmande <anmande@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 16:16:07 by anmande           #+#    #+#             */
-/*   Updated: 2023/12/20 19:03:52 by anmande          ###   ########.fr       */
+/*   Updated: 2023/12/22 15:36:56 by anmande          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,11 +133,14 @@ int main()
 {
     int creature_count;
     cin >> creature_count; cin.ignore();
+    Creature net[creature_count];
     for (int i = 0; i < creature_count; i++) {
         int creature_id;
         int color;
         int type;
+        net[i].inst(creature_id, type);
         cin >> creature_id >> color >> type; cin.ignore();
+        cerr << net[i].getId() << net[i].getType() << endl;
     }
     // game loop
     
@@ -152,7 +199,17 @@ int main()
             int creature_y;
             int creature_vx;
             int creature_vy;
-            cin >> creature_id >> creature_x >> creature_y >> creature_vx >> creature_vy; cin.ignore();
+            cin >> creature_id >> creature_x >> creature_y >>\
+                creature_vx >> creature_vy; cin.ignore();
+            
+            // below reset creatures variables
+            
+            for (int j = 0; net[j].getId() == creature_id; j++)
+            {
+                net[creature_id].setCreature(creature_x, \
+                    creature_y, creature_vx, creature_vy);
+                cerr << net[j].getId() << net[j].getType() << endl;
+            }
         }
         int radar_blip_count;
         cin >> radar_blip_count; cin.ignore();
@@ -167,8 +224,11 @@ int main()
             // Write an action using cout. DON'T FORGET THE "<< endl"
             // To debug: cerr << "Debug messages..." << endl;
             tab[i].droneMvt();
+            for (int j = 0; net[j].getType() == -1; j++)
+            {
+                cerr << net[j].getX() << "." << net[j].getY() << endl;
+            }
             cout << "MOVE " << tab[i].getX() << " " << tab[i].getY() << " " << tab[i].lightOn() << " " << tab[i].lightOn() << endl; // MOVE <x> <y> <light (1|0)> | WAIT <light (1|0)>
-            //cerr << "Light a 4500 et 7500" << endl;
         }
     }
 }
@@ -180,7 +240,7 @@ int main()
 /*   By: anmande <anmande@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 17:35:27 by anmande           #+#    #+#             */
-/*   Updated: 2023/12/20 19:14:00 by anmande          ###   ########.fr       */
+/*   Updated: 2023/12/22 13:59:42 by anmande          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,7 +326,7 @@ void Drone::mvtL()
 void Drone::droneMvt()
 {
     mvtDown();
-    mvtR();
+    //mvtR();
     // if (this->_left)
     //     setX(true);
 }
@@ -279,3 +339,62 @@ bool Drone::lightOn()
         return (true);
     return (false);
 }
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   creature.cpp                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anmande <anmande@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/19 17:16:42 by anmande           #+#    #+#             */
+/*   Updated: 2023/12/22 15:30:14 by anmande          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+
+Creature::Creature()
+{
+}
+
+Creature::~Creature()
+{
+}
+
+void Creature::inst(int id, int type)
+{   
+    this->_creature_id = id;
+    this->_creature_type = type;
+}
+
+void Creature::setCreature(int x, int y, int vx, int vy)
+{
+    _creature_x = x;
+    _creature_y = y;
+    _creature_vx = vx;
+    _creature_vy = vy;
+}
+
+int Creature::getId() const
+{
+    return (_creature_id);
+}
+
+int Creature::getType() const
+{
+    return (_creature_type);
+}
+
+int Creature::getX() const 
+{
+    return (_creature_x);
+}
+
+int Creature::getY() const 
+{
+    return (_creature_y);
+}
+
+// const int Creature::getVector()
+// {
+//     return(->_creature_)
+// }

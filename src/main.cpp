@@ -6,7 +6,7 @@
 /*   By: anmande <anmande@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 16:16:07 by anmande           #+#    #+#             */
-/*   Updated: 2023/12/20 19:03:52 by anmande          ###   ########.fr       */
+/*   Updated: 2023/12/22 15:36:56 by anmande          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,14 @@ int main()
 {
     int creature_count;
     cin >> creature_count; cin.ignore();
+    Creature net[creature_count];
     for (int i = 0; i < creature_count; i++) {
         int creature_id;
         int color;
         int type;
+        net[i].inst(creature_id, type);
         cin >> creature_id >> color >> type; cin.ignore();
+        cerr << net[i].getId() << net[i].getType() << endl;
     }
     // game loop
     
@@ -89,7 +92,17 @@ int main()
             int creature_y;
             int creature_vx;
             int creature_vy;
-            cin >> creature_id >> creature_x >> creature_y >> creature_vx >> creature_vy; cin.ignore();
+            cin >> creature_id >> creature_x >> creature_y >>\
+                creature_vx >> creature_vy; cin.ignore();
+            
+            // below reset creatures variables
+            
+            for (int j = 0; net[j].getId() == creature_id; j++)
+            {
+                net[creature_id].setCreature(creature_x, \
+                    creature_y, creature_vx, creature_vy);
+                cerr << net[j].getId() << net[j].getType() << endl;
+            }
         }
         int radar_blip_count;
         cin >> radar_blip_count; cin.ignore();
@@ -104,8 +117,11 @@ int main()
             // Write an action using cout. DON'T FORGET THE "<< endl"
             // To debug: cerr << "Debug messages..." << endl;
             tab[i].droneMvt();
+            for (int j = 0; net[j].getType() == -1; j++)
+            {
+                cerr << net[j].getX() << "." << net[j].getY() << endl;
+            }
             cout << "MOVE " << tab[i].getX() << " " << tab[i].getY() << " " << tab[i].lightOn() << " " << tab[i].lightOn() << endl; // MOVE <x> <y> <light (1|0)> | WAIT <light (1|0)>
-            //cerr << "Light a 4500 et 7500" << endl;
         }
     }
 }

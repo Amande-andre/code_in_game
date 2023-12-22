@@ -6,7 +6,7 @@
 /*   By: anmande <anmande@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 17:35:27 by anmande           #+#    #+#             */
-/*   Updated: 2023/12/20 19:15:49 by anmande          ###   ########.fr       */
+/*   Updated: 2023/12/22 13:59:42 by anmande          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ void Drone::mvtL()
 void Drone::droneMvt()
 {
     mvtDown();
-    mvtR();
+    //mvtR();
     // if (this->_left)
     //     setX(true);
 }
