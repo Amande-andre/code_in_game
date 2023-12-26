@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   drone.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anmande <anmande@student.42.fr>            +#+  +:+       +#+        */
+/*   By: j <j@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 17:36:03 by anmande           #+#    #+#             */
-/*   Updated: 2023/12/20 18:24:00 by anmande          ###   ########.fr       */
+/*   Updated: 2023/12/26 11:17:20 by j                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ private:
     int _up;
     int _left;
     int _right;
-    //int _turn;
+    int _dodge;
+	int	_light;
 public:
     Drone();
     ~Drone();
@@ -37,12 +38,13 @@ public:
     void setY(bool _bool);
     int  getX();
     int  getY();
+	int	 getLight();
     void droneMvt();
     void mvtUp();
     void mvtDown();
     void mvtR();
     void mvtL();
-    bool lightOn();
+    void lightOn();
 };
 
 #endif

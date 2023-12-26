@@ -8,10 +8,10 @@ CPPFLAGS	=	-MMD
 CXXFLAGS	=	-Wall -Wextra #-Werror
 
 #ADD YOUR SOURCES BELOW WITHOUT THE SOURCE PREFIX MAIN.C GIVEN AS EXAMPLE
-SRCS		=	main.cpp drone.cpp creature.cpp
+SRCS		=	main.cpp drone.cpp creature.cpp utils.cpp
 
 #IF YOU HAVE HEADER FILES YOU ABSOLUTELY NEED TO ADD THEM IN THE INC_FILES VAR
-INC_FILES	= main.hpp drone.hpp creature.hpp
+INC_FILES	= main.hpp drone.hpp creature.hpp utils.hpp
 
 			
 INC_PATH	=	includes/

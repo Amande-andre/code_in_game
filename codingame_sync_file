@@ -20,10 +20,10 @@
 /*                                                        :::      ::::::::   */
 /*   drone.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anmande <anmande@student.42.fr>            +#+  +:+       +#+        */
+/*   By: j <j@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 17:36:03 by anmande           #+#    #+#             */
-/*   Updated: 2023/12/20 18:24:00 by anmande          ###   ########.fr       */
+/*   Updated: 2023/12/26 11:17:20 by j                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ private:
     int _up;
     int _left;
     int _right;
-    //int _turn;
+    int _dodge;
+	int	_light;
 public:
     Drone();
     ~Drone();
@@ -54,12 +55,13 @@ public:
     void setY(bool _bool);
     int  getX();
     int  getY();
+	int	 getLight();
     void droneMvt();
     void mvtUp();
     void mvtDown();
     void mvtR();
     void mvtL();
-    bool lightOn();
+    void lightOn();
 };
 
 #endif/* ************************************************************************** */
@@ -109,12 +111,31 @@ public:
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
+/*   utils.hpp                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: j <j@student.42.fr>                        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/26 11:25:34 by j                 #+#    #+#             */
+/*   Updated: 2023/12/26 15:51:25 by j                ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef UTILS_HPP
+
+#define UTILS_HPP
+
+
+void nearMonster(Creature Mstr, Drone drone);
+
+#endif/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anmande <anmande@student.42.fr>            +#+  +:+       +#+        */
+/*   By: j <j@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 16:16:07 by anmande           #+#    #+#             */
-/*   Updated: 2023/12/22 15:36:56 by anmande          ###   ########.fr       */
+/*   Updated: 2023/12/26 15:50:37 by j                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,14 +154,13 @@ int main()
 {
     int creature_count;
     cin >> creature_count; cin.ignore();
-    Creature net[creature_count];
+    Creature net[creature_count + 1];
     for (int i = 0; i < creature_count; i++) {
         int creature_id;
         int color;
         int type;
-        net[i].inst(creature_id, type);
         cin >> creature_id >> color >> type; cin.ignore();
-        cerr << net[i].getId() << net[i].getType() << endl;
+        net[i].inst(creature_id, type);
     }
     // game loop
     
@@ -201,14 +221,17 @@ int main()
             int creature_vy;
             cin >> creature_id >> creature_x >> creature_y >>\
                 creature_vx >> creature_vy; cin.ignore();
-            
             // below reset creatures variables
-            
-            for (int j = 0; net[j].getId() == creature_id; j++)
+            for (int j = 0; j < creature_count; j++)
             {
-                net[creature_id].setCreature(creature_x, \
-                    creature_y, creature_vx, creature_vy);
-                cerr << net[j].getId() << net[j].getType() << endl;
+                if (net[j].getId() == creature_id)
+				{
+					net[j].setCreature(creature_x, \
+						creature_y, creature_vx, creature_vy);
+               		cerr << net[j].getId() << net[j].getType() << " x = " << net[j].getX() << endl;
+					nearMonster(net[j], tab[0]);
+					nearMonster(net[j], tab[1]);
+				}
             }
         }
         int radar_blip_count;
@@ -228,7 +251,7 @@ int main()
             {
                 cerr << net[j].getX() << "." << net[j].getY() << endl;
             }
-            cout << "MOVE " << tab[i].getX() << " " << tab[i].getY() << " " << tab[i].lightOn() << " " << tab[i].lightOn() << endl; // MOVE <x> <y> <light (1|0)> | WAIT <light (1|0)>
+            cout << "MOVE " << tab[i].getX() << " " << tab[i].getY() << " " << tab[i].getLight() << " " << tab[i].getLight() << endl; // MOVE <x> <y> <light (1|0)> | WAIT <light (1|0)>
         }
     }
 }
@@ -237,10 +260,10 @@ int main()
 /*                                                        :::      ::::::::   */
 /*   drone.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anmande <anmande@student.42.fr>            +#+  +:+       +#+        */
+/*   By: j <j@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 17:35:27 by anmande           #+#    #+#             */
-/*   Updated: 2023/12/22 13:59:42 by anmande          ###   ########.fr       */
+/*   Updated: 2023/12/26 11:45:23 by j                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -254,8 +277,10 @@ Drone::Drone()
     this->_pos_y = 0;
     this-> _up = 0;    
     this-> _down = 1;
-    this-> _left = 0;
-    this-> _right = 0;
+    this-> _left = 1;
+    this-> _right = 1;
+	this-> _dodge = 0;
+	this-> _light = 0;
 }
 
 Drone::~Drone()
@@ -276,6 +301,11 @@ int Drone::getX()
 int Drone::getY()
 {
     return (this->_pos_y);
+}
+
+int Drone::getLight()
+{
+	return (this->_light);
 }
 
 void Drone::setX(bool _bool)
@@ -331,13 +361,13 @@ void Drone::droneMvt()
     //     setX(true);
 }
 
-bool Drone::lightOn()
+void Drone::lightOn()
 {
     if (this->_pos_y >= 7500 && this->_pos_y <= 6900)
-        return (true);
+        this->_light = 1;
     if (this->_pos_y >= 4000 && this->_pos_y <= 4500)
-        return (true);
-    return (false);
+        this->_light = 1;
+    this->_light = 0;
 }
 /* ************************************************************************** */
 /*                                                                            */
@@ -397,4 +427,38 @@ int Creature::getY() const
 // const int Creature::getVector()
 // {
 //     return(->_creature_)
-// }
+// }/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.cpp                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: j <j@student.42.fr>                        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/26 11:23:50 by j                 #+#    #+#             */
+/*   Updated: 2023/12/26 15:51:09 by j                ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+
+void nearMonster(Creature Mstr, Drone drone)
+{
+	int min;
+	int max;
+	if (Mstr.getType() == -1)
+	{
+		if (Mstr.getX() < drone.getX())
+		{
+			min = Mstr.getX();
+			max = drone.getX();
+		}
+		else
+		{
+			max = Mstr.getX();
+			min = drone.getX();
+		}
+		if (max - min <= 500)
+		{
+			std::cerr << "troubles" << std::endl;
+		}
+	}
+}
